@@ -463,13 +463,14 @@
                 "\n",
                 "sudo apt-get update\n",
                 "sudo apt-get install s3fs\n",
-                "cd /home/ubuntu\n",
+                "mkdir -p /home/ubuntu/Documents/MATLAB\n",
+                "sudo chown ubuntu:ubuntu /home/ubuntu/Documents/MATLAB\n",
+                "cd /home/ubuntu/Documents/MATLAB\n",
                 "sudo git clone https://github.com/NeurodataWithoutBorders/matnwb.git\n",
                 "sudo chown ubuntu:ubuntu /home/ubuntu/matnwb\n",
-                "wget https://raw.githubusercontent.com/INCF/matlab-on-aws/master/startup.m --no-check-certificate\n",
+                "cd /home/ubuntu\n",
                 "mkdir -m a=rwx s3-dandi\n",
-                "mkdir -p /home/ubuntu/Documents/MATLAB\n",
-                "mv startup.m /home/ubuntu/Documents/MATLAB\n"                
+                "s3fs -o public_bucket=1 -o umask=0022 dandiarchive ~/s3-dandi"
               ]
             ]
           }
