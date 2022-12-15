@@ -3,58 +3,58 @@
   "Mappings": {
     "RegionMap": {
       "us-east-1": {
-        "AMI": "ami-0d420428640d5ced9"
+        "AMI": "ami-0afadd1711391423d"
       },
       "us-east-2": {
-        "AMI": "ami-0d03552e11e61420a"
+        "AMI": "ami-04b29b2cc75cbfef3"
       },
       "us-west-1": {
-        "AMI": "ami-0dcbb6f73f7aee9b8"
+        "AMI": "ami-04dfe5df39d469a4a"
       },
       "us-west-2": {
-        "AMI": "ami-0ec1f40daa882914d"
+        "AMI": "ami-03c107683f6afc241"
       },
       "ca-central-1": {
-        "AMI": "ami-0480ea8b3e812b52a"
+        "AMI": "ami-0ff9c87a1557f22c9"
       },
       "eu-central-1": {
-        "AMI": "ami-01a7516620e709ee8"
+        "AMI": "ami-0038b7a91dd98ca9d"
       },
       "eu-west-1": {
-        "AMI": "ami-03bf63dad51328578"
+        "AMI": "ami-0fd2bb45b984f6511"
       },
       "eu-west-2": {
-        "AMI": "ami-0c3eac82471d43d02"
+        "AMI": "ami-079a3651a0621ad3a"
       },
       "eu-west-3": {
-        "AMI": "ami-09fe03a72fc3aa17f"
+        "AMI": "ami-090fd77400e97f781"
       },
       "eu-north-1": {
-        "AMI": "ami-0bea59b652c023e82"
+        "AMI": "ami-0eaad05f82f15b21d"
       },
       "sa-east-1": {
-        "AMI": "ami-018fcaf3e3a45283c"
+        "AMI": "ami-022968adb0474a493"
       },
       "me-south-1": {
-        "AMI": "ami-0fb0538796f0f5b40"
+        "AMI": "ami-0f038e5d9ac54697e"
       },
       "ap-east-1": {
-        "AMI": "ami-013169906e04e914f"
+        "AMI": "ami-072f0de7f6615a12f"
       },
       "ap-south-1": {
-        "AMI": "ami-0e1d0dc5324dcc76c"
+        "AMI": "ami-06a9197b7e8b18c1a"
       },
       "ap-northeast-1": {
-        "AMI": "ami-001d0571205a8cd70"
+        "AMI": "ami-019c6f60cab370495"
       },
       "ap-northeast-2": {
-        "AMI": "ami-016bdf90c1e0c1b70"
+        "AMI": "ami-01f767ee897dbd3fa"
       },
       "ap-southeast-1": {
-        "AMI": "ami-0997a32211c19ef35"
+        "AMI": "ami-000373a1eab1dbe20"
       },
       "ap-southeast-2": {
-        "AMI": "ami-05afbc9b42045063a"
+        "AMI": "ami-0f7bf48f5da52b735"
       }
     }
   },
@@ -362,7 +362,7 @@
                 "#!/bin/bash\n",
                 "# Copyright 2011-2022 The MathWorks, Inc.\n",
                 "cd /usr/local/matlab\n",
-                "nohup /usr/bin/parallel -j64 -m --nice 10 --arg-file /usr/local/etc/msa/msa.ini /bin/cat {} > /dev/null 2>&1 &\n",
+                "nohup /usr/local/matlab/bin/glnxa64/MATLABStartupAccelerator 64 /usr/local/matlab /usr/local/etc/msa/msa.ini /tmp/startup_accelerator.log &> /dev/null  &\n",
                 "echo \"",
                 {
                   "Fn::Join": [
@@ -454,7 +454,17 @@
                 {
                   "Ref": "AWS::Region"
                 },
-                "\n"
+                "\n",
+                "sudo apt-get update\n",
+                "sudo apt-get install s3fs\n",
+                "mkdir -p /home/ubuntu/Documents/MATLAB\n",
+                "sudo chown ubuntu:ubuntu /home/ubuntu/Documents/MATLAB\n",
+                "cd /home/ubuntu/Documents/MATLAB\n",
+                "sudo git clone https://github.com/NeurodataWithoutBorders/matnwb.git\n",
+                "sudo chown ubuntu:ubuntu /home/ubuntu/matnwb\n",
+                "cd /home/ubuntu\n",
+                "mkdir -m a=rwx s3-dandi\n",
+                "s3fs -o public_bucket=1 -o umask=0022 dandiarchive ~/s3-dandi"
               ]
             ]
           }
