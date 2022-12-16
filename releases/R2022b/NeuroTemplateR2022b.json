@@ -155,9 +155,7 @@
               "Statement": [
                 {
                   "Effect": "Allow",
-                  "Action": [
-                    "s3:GetObject"
-                  ],
+                  "Action": ["s3:GetObject"],
                   "Resource": {
                     "Fn::Join": [
                       "",
@@ -455,16 +453,16 @@
                   "Ref": "AWS::Region"
                 },
                 "\n",
-                "sudo apt-get update\n",
-                "sudo apt-get install s3fs\n",
+                "sudo apt-get update -y\n",
+                "sudo apt-get install s3fs -y\n",
                 "mkdir -p /home/ubuntu/Documents/MATLAB\n",
                 "sudo chown ubuntu:ubuntu /home/ubuntu/Documents/MATLAB\n",
                 "cd /home/ubuntu/Documents/MATLAB\n",
                 "sudo git clone https://github.com/NeurodataWithoutBorders/matnwb.git\n",
-                "sudo chown ubuntu:ubuntu /home/ubuntu/matnwb\n",
-                "cd /home/ubuntu\n",
-                "mkdir -m a=rwx s3-dandi\n",
-                "s3fs -o public_bucket=1 -o umask=0022 dandiarchive ~/s3-dandi"
+                "sudo chown -R ubuntu:ubuntu /home/ubuntu/Documents/MATLAB/matnwb\n",
+                "mkdir /home/ubuntu/s3-dandi\n",
+                "sudo chown ubuntu:ubuntu /home/ubuntu/s3-dandi\n",
+                "su -c 's3fs -o public_bucket=1 dandiarchive /home/ubuntu/s3-dandi' ubuntu\n"
               ]
             ]
           }
@@ -535,9 +533,7 @@
               "name": "runCommands",
               "inputs": {
                 "timeoutSeconds": "60",
-                "runCommand": [
-                  "{{ commands }}"
-                ]
+                "runCommand": ["{{ commands }}"]
               }
             }
           ]
@@ -580,10 +576,7 @@
         "Runtime": "python3.8",
         "Timeout": "60",
         "Role": {
-          "Fn::GetAtt": [
-            "AutoShutdownLambdaRole",
-            "Arn"
-          ]
+          "Fn::GetAtt": ["AutoShutdownLambdaRole", "Arn"]
         }
       }
     },
@@ -702,10 +695,7 @@
         "Targets": [
           {
             "Arn": {
-              "Fn::GetAtt": [
-                "AutoShutdownLambda",
-                "Arn"
-              ]
+              "Fn::GetAtt": ["AutoShutdownLambda", "Arn"]
             },
             "Id": "TargetFunctionV1"
           }
@@ -721,10 +711,7 @@
         "Action": "lambda:InvokeFunction",
         "Principal": "events.amazonaws.com",
         "SourceArn": {
-          "Fn::GetAtt": [
-            "AutoShutdownScheduledRule",
-            "Arn"
-          ]
+          "Fn::GetAtt": ["AutoShutdownScheduledRule", "Arn"]
         }
       }
     },
@@ -760,19 +747,13 @@
       "Description": "Access protocol to connect to this instance",
       "Default": "RDP",
       "Type": "String",
-      "AllowedValues": [
-        "NICE DCV",
-        "RDP"
-      ]
+      "AllowedValues": ["NICE DCV", "RDP"]
     },
     "UseElasticIpAddress": {
       "Description": "Flag indicating whether you want to keep the same public IP address for the instance",
       "Default": "No",
       "Type": "String",
-      "AllowedValues": [
-        "Yes",
-        "No"
-      ]
+      "AllowedValues": ["Yes", "No"]
     },
     "RootVolumeSize": {
       "Description": "Size in GB of the root volume",
@@ -844,10 +825,7 @@
     "EnableCloudWatch": {
       "Description": "Flag indicating whether cloudwatch logging for the MATLAB instance is enabled.",
       "Type": "String",
-      "AllowedValues": [
-        "Yes",
-        "No"
-      ],
+      "AllowedValues": ["Yes", "No"],
       "Default": "No"
     },
     "AutoShutdown": {
@@ -912,10 +890,7 @@
           "Assert": {
             "Fn::EachMemberEquals": [
               {
-                "Fn::ValueOfAll": [
-                  "AWS::EC2::Subnet::Id",
-                  "VpcId"
-                ]
+                "Fn::ValueOfAll": ["AWS::EC2::Subnet::Id", "VpcId"]
               },
               {
                 "Ref": "VPC"
@@ -1123,10 +1098,7 @@
           [
             "https://",
             {
-              "Fn::GetAtt": [
-                "MATLABEC2Instance",
-                "PublicDnsName"
-              ]
+              "Fn::GetAtt": ["MATLABEC2Instance", "PublicDnsName"]
             },
             ":8443/#console"
           ]
@@ -1137,10 +1109,7 @@
       "Condition": "UseXRDP",
       "Description": "Public DNSName of the newly created EC2 instance",
       "Value": {
-        "Fn::GetAtt": [
-          "MATLABEC2Instance",
-          "PublicDnsName"
-        ]
+        "Fn::GetAtt": ["MATLABEC2Instance", "PublicDnsName"]
       }
     }
   },
@@ -1176,35 +1145,25 @@
           "Label": {
             "default": "Network Configuration"
           },
-          "Parameters": [
-            "VPC",
-            "Subnet",
-            "AdditionalSecurityGroup"
-          ]
+          "Parameters": ["VPC", "Subnet", "AdditionalSecurityGroup"]
         },
         {
           "Label": {
             "default": "License Configuration"
           },
-          "Parameters": [
-            "LicenseManager"
-          ]
+          "Parameters": ["LicenseManager"]
         },
         {
           "Label": {
             "default": "Logging Configuration"
           },
-          "Parameters": [
-            "EnableCloudWatch"
-          ]
+          "Parameters": ["EnableCloudWatch"]
         },
         {
           "Label": {
             "default": "Autoshutdown Configuration"
           },
-          "Parameters": [
-            "AutoShutdown"
-          ]
+          "Parameters": ["AutoShutdown"]
         }
       ],
       "ParameterLabels": {
